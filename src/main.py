@@ -5,6 +5,7 @@ from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 from loguru import logger
 import os
+import uvicorn
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -40,9 +41,12 @@ def get_db():
 
 @app.get("/", response_model=List[PostGet])
 def recommended_posts(
-    id: int, time: datetime = None, limit: int = 10, db: Session = Depends(get_db)
+    id: int, 
+    time: datetime = None,
+    limit: int = 10, 
+    db: Session = Depends(get_db)
 ) -> List[PostGet]:
-    """эндпоинт выводит рекомендации постов для юзера, основанные на его предыдущих действиях.
+    """эндпоинт выводит список рекомендаций постов для юзера, основанные на его предыдущих действиях.
     рекомендации выводятся моделью model из Load_model и датафрейма модели"""
 
     recomend_list = Predictions.prediction_list(
@@ -50,7 +54,10 @@ def recommended_posts(
     )
     print(recomend_list)
     result = db.query(Post).filter(Post.id.in_(recomend_list)).all()
-    return result
+    if result == []:
+        raise HTTPException(404, detail="User not found")
+    else:
+        return result
 
 
 @app.get("/user/{id}", response_model=UserGet)
@@ -114,3 +121,5 @@ def get_post_feed(id: int, limit: int = 10, db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     load_dotenv()
+    # для запуска приложения для github
+    uvicorn.run(app)
