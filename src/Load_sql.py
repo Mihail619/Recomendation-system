@@ -12,5 +12,5 @@ def batch_load_sql(query: str) -> pd.DataFrame:
     return pd.concat(chunks, ignore_index=True)
 
 def load_features() -> pd.DataFrame:
-    return batch_load_sql("SELECT * FROM mi_ponomarev_feature_lesson_10 LIMIT 1000")
+    return batch_load_sql("SELECT * FROM mi_ponomarev_feature_lesson_10 LIMIT 2000000")
 
