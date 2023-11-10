@@ -15,6 +15,4 @@ class Feed(Base):
     user = relationship(User)
 
 if __name__ == "__main__":
-    session = SessionLocal()
-    request = session.query(Feed).filter(Feed.user_id==8834).limit(10).all()
-    print(request[0].time)# [0].action)
+    pass
